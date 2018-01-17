@@ -4,26 +4,22 @@ var TeacherRestController = function(TeacherModel) {
     /**
      * Fulfills GET on an  echo service to check REST service is UP
      * It returns "echo REST GET returned input msg:" + req.params.msg
-     * http://localhost:8016/students/echo/:msg     GET
-     * http://localhost:8016/students/echo/hohoho   GET
+     * http://localhost:8016/api/v1/teachers/echo/:msg     GET
      * 
-       curl -i http://localhost:8016/students/echo/hohoho
+       curl -i http://localhost:8016/teachers/echo/hohoho
      * @param {*} req 
      * @param {*} res 
      */
     var echoMsg = function(req, res) {
         res.status(200);
-        res.send("echo REST GET returned input msg:" + req.params.msg); // NOTE ilker 'res.send("echo REST GET returned input msg:%s", req.params.msg)' is WRONG. Syntax is 'res.send(status, body)'
+        res.send("echo REST GET returned input msg:" + req.params.msg);
     };
 
     /**
-     * Fulfills GET REST requests. Returns collection of all students in mondodb using the StudentModel of mongoose that was injected via constructor function
-     * http://localhost:8016/students            GET
-     * http://localhost:8016/api/v1/students     GET
-     * http://localhost:8016/api/v2/students     GET  - not implemented in app, just shown as example
+     * Fulfills GET REST requests. Returns collection of all teaachers in mongodb using the TeacherModel of mongoose that was injected via constructor function
+     * http://localhost:8016/api/v1/teachers     GET
      * 
-       curl -i http://localhost:8016/students
-       curl -i http://localhost:8016/api/v1/students
+       curl -i http://localhost:8016/api/v1/teachers
      * 
      * @param {*} req Request
      * @param {*} res Response
@@ -42,17 +38,10 @@ var TeacherRestController = function(TeacherModel) {
 
     /**
      * Fulfills GET for and id in url REST requests.
-     * It returns the student instance whose _id value is specified in url and passed as req.params._id
-     * You can find pick one of the row's _id value from mongodb, in its client mongo, from output of
-     * > db.students.find()
-     * http://localhost:8016/students/:id                                GET
-     * http://localhost:8016/students/5a1464bf3322b34128b20c8c           GET
-     * http://localhost:8016/api/v1/students/:id                         GET
      * 
-       curl  http://localhost:8016/students/5a1464bf3322b34128b20c8c
-       curl -i http://localhost:8016/students/5a1464bf3322b34128b20c8c
-       curl -i -X GET http://localhost:8016/students/5a1464bf3322b34128b20c8c
-       curl  http://localhost:8016/api/v1/students/5a1464bf3322b34128b20c8c
+     * http://localhost:8016/api/v1/teachers/:id                         GET
+     * 
+     * curl -i http://localhost:8016/api/v1/teachers/5a1464bf3322b34128b20c8c
      * 
      * @param {*} req 
      * @param {*} res 
@@ -61,7 +50,7 @@ var TeacherRestController = function(TeacherModel) {
         if (req.params && req.params.id && mongoose.Types.ObjectId.isValid(req.params.id)) {
             TeacherModel.findById(req.params.id, function(error, teacher) {
                 if (error) {
-                    res.status(404); // 404 means not found
+                    res.status(404);
                     res.send("Not found Teacher for id:" + req.params.id);
                 } else {
                     res.status(200);
@@ -75,22 +64,18 @@ var TeacherRestController = function(TeacherModel) {
     };
 
     /**
-     * Fulfills POST REST requests. Directly saves student object that was passed in req.body.
-     * NOTE _id (the primary key that mongodb by default creates an index to speed up finds on) and __v (meaning version) will be added to record by mongodb itself
+     * Fulfills POST REST requests. Directly saves teacher object
      * http://localhost:8016/students             POST
      * 
-       curl -X POST -H "Content-Type: application/json" -i -d  '{"studentId": 0, "name":"ilker_0", "lastname":"kiris_0", "grade":"freshman ", "age":200, "isFullTime":false}' http://localhost:8016/students
-       curl -X POST -H "Content-Type: application/json" -d     '{"studentId": 1, "name":"ilker_1", "lastname":"kiris_1", "grade":"FreshMan",  "age":201, "isFullTime":false}' http://localhost:8016/students
-       curl -X POST -H "Content-Type: application/json" --data '{"studentId": 2, "name":"ilker_2", "lastname":"kiris_2", "grade":" freshman", "age":202, "isFullTime":true}'  http://localhost:8016/students
-       curl -X POST -H "Content-Type: application/json" -i -d  '{"studentId": 3, "name":"ilker_3", "lastname":"kiris_3", "grade":" freshman", "age":203, "isFullTime":true}'  http://localhost:8016/students
+       curl -X POST -H "Content-Type: application/json" -i -d  '{"teacherId": 0, "name":"vin", "lastname":"mustillo", "title":"assistant", "age":21, "isFullTime":true}' http://localhost:8016/api/v1/teachers
      * 
      * In postman, select POST as method, click Body, click raw, select "JSON(application/json)" pulldown, enter below
      * {
-     *   "studentId": 4,
-     *   "name": "ilker_4 ",
-     *   "lastname": "kiris_4",
-     *   "grade": "FreshMan ",
-     *   "age": 204,
+     *   teacherId": 4,
+     *   "name": "vin",
+     *   "lastname": "mustillo",
+     *   "title": "Assistant",
+     *   "age": 21,
      *   "isFullTime": false
      * }
      * @param {*} request 
@@ -113,41 +98,14 @@ var TeacherRestController = function(TeacherModel) {
         });
     };
 
-    // id: Number
-    // name: String,
-    // lastname: String,
-    // grade: String,
-    // age: Number,
-    // isFullTime: { type: Boolean, default: true }
-    // updatedOn: Date
-
     /**
-     * Fulfills PUT REST requests. This is NOT partial update, but full update of student record in mongodb for id in the url 
-     * 1) Find the student from mongodb by id provided in the url
-     * 2) Set student fetched from mongodb to have values of all the attributes expected to be in the body of request
-     * 3) Save the replaced student back to mongodb
-     * http://localhost:8016/students/:id                       PUT
-     * http://localhost:8016/students/5a23e035decd2b6770ab4890  PUT
+     * Fulfills PUT REST requests.
+     * http://localhost:8016/api/v1/teachers/:id                       PUT
      * 
-       curl -X PUT -H "Content-Type: application/json" -i -d '{"studentId": 0, "name":"ilker_0_update",   "lastname":"kiris_0", "grade":"freshman ", "age":200, "isFullTime":false}' http://localhost:8016/students/5a23f72a1fb00a38f0a814a9
-       curl -X PUT -H "Content-Type: application/json" -i -d '{"studentId": 0, "name":"ilker_0_update_2", "lastname":"kiris_0", "grade":"freshman ", "age":200, "isFullTime":false, "updatedOn":"2017-12-03T12:39:06.446Z"}' http://localhost:8016/students/5a23f72a1fb00a38f0a814a9
-       curl -X PUT -H "Content-Type: application/json" -i -d '{"studentId": 0, "name":"ilker_0_update_2", "lastname":"kiris_0", "grade":"freshman ", "age":200, "isFullTime":false, "updatedOn":"'"$(date +%Y-%m-%dT%H:%M:%S)"'"}' http://localhost:8016/students/5a23f72a1fb00a38f0a814a9
-       curl -X PUT -H "Content-Type: application/json" -i -d '{"studentId": 3, "name":"ilker_3_update",   "lastname":"kiris_3", "grade":"freshman ", "age":200, "isFullTime":false, "updatedOn":"'"$(date +%Y-%m-%dT%H:%M:%S)"'"}' http://localhost:8016/students/5a2f2505c96a552334fdc762
+       curl -X PUT -H "Content-Type: application/json" -i -d '{"teacherId": 0, "name":"vin",   "lastname":"mustillo", "title":"assistant", "age":21, "isFullTime":false}' http://localhost:8016/api/v1/teachers/5a23f72a1fb00a38f0a814a9
      * 
-     * In postman, select PUT as method, click Body, click raw, select "JSON(application/json)" pulldown,
-     * in url enter   http://localhost:8016/students/5a23e72b0a47f03f787cd618
-     * in "Pre-request Script" tab of postman, enter
-     *   postman.setGlobalVariable("myCurrentDate", new Date().toISOString());
-     * in "Body" tab of postman, enter
-     * {
-     *   "studentId": 4,
-     *   "name": "ilker_4_update",
-     *   "lastname": "kiris_4",
-     *   "grade": "FreshMan ",
-     *   "age": 204,
-     *   "isFullTime": false,
-     *   "updatedOn": "{{myCurrentDate}}"
-     * }
+     * in url enter   http://localhost:8016/api/v1/teachers/5a23e72b0a47f03f787cd618
+     *
      * @param {*} req 
      * @param {*} res 
      */
@@ -185,13 +143,10 @@ var TeacherRestController = function(TeacherModel) {
     };
 
     /**
-     * Fulfills PATCH REST requests. NOTE this is allows partial update of student record. 
-     * 1) Find the student from mongodb by id provided in the url
-     * 2) Loop over the attribute names in the body of request and set their values in the student that was fetched from mongodb
-     * 3) Save the updated student back to mongodb
-     * http://localhost:8016/students/:id             PATCH
+     * Fulfills PATCH REST requests.
+     * http://localhost:8016/api/v1/teachers/:id             PATCH
      * 
-       curl -X PATCH -H "Content-Type: application/json" -i -d '{"grade":"sophomore", "age":123, "isFullTime":false}' http://localhost:8016/students/5a23f72a1fb00a38f0a814a9
+       curl -X PATCH -H "Content-Type: application/json" -i -d '{"teacherId": 0, "name":"vin",   "lastname":"mustillo", "title":"assistant", "age":21, "isFullTime":false}' http://localhost:8016/api/v1/teachers/5a23f72a1fb00a38f0a814a9
      * 
      * @param {*} req 
      * @param {*} res 
@@ -231,11 +186,8 @@ var TeacherRestController = function(TeacherModel) {
 
     /**
      * Fulfills DELETE REST requests.
-     * Removes(Deletes) the student row whose _id value is specied in the url and passed in req.
-     * NOTE _id and _version will be added to record by mongodb itself
-     * http://localhost:8016/students/:id             DELETE
      * 
-       curl -X DELETE -i http://localhost:8016/students/5a23f72a1fb00a38f0a814a9
+       curl -X DELETE -i http://localhost:8016/api/v1/teachers/5a23f72a1fb00a38f0a814a9
      * 
      * @param {*} req 
      * @param {*} res 
@@ -243,7 +195,6 @@ var TeacherRestController = function(TeacherModel) {
     var findByIdThenRemove = function(req, res) {
         try {
             console.log("findByIdThenRemove req.params.id:%s", req.params.id);
-            // NOTE ilker mongoose.Types.ObjectId.isValid(req.params.id) returns true for any 12 byte string input
             if (req.params && req.params.id && mongoose.Types.ObjectId.isValid(req.params.id)) {
                 // if (req.params && req.params.id) {
                 console.log(" again findByIdThenRemove req.params.id:%s", req.params.id);
@@ -277,10 +228,8 @@ var TeacherRestController = function(TeacherModel) {
 
     /**
      * Fulfills DELETE REST requests.
-     * Removes(Deletes) the student row whose _id value is specied in the body and passed in req.body._id
-     * http://localhost:8016/students             DELETE
      * 
-       curl -X DELETE -H "Content-Type: application/json" -i -d '{"_id":"5a2f1ef568f053451051ebdb"}' http://localhost:8016/students
+       curl -X DELETE -H "Content-Type: application/json" -i -d '{"_id":"5a2f1ef568f053451051ebdb"}' http://localhost:8016/api/v1/teachers
      * 
      * @param {*} req 
      * @param {*} res 

@@ -5,18 +5,18 @@ var teacherRestController = require('../controller/teacherRestController')(Teach
 
 var teacherRestRouter = express.Router();
 
-teacherRestRouter.route('') // "/students" - the root url is defined by user of this router, main_restServer as "/students"
+teacherRestRouter.route('') // "/teachers" - the root url is defined by user of this router, main_restServer as "/students"
     .get(teacherRestController.find)
     .post(teacherRestController.save)
     .delete(teacherRestController.findByIdInBodyThenRemove);
 
-teacherRestRouter.route('/:id') // "students/:id"
+teacherRestRouter.route('/:id') // "teachers/:id"
     .get(teacherRestController.findById)
     .put(teacherRestController.findByIdUpdateFullyThenSave)
     .patch(teacherRestController.findByIdUpdatePartiallyThenSave)
     .delete(teacherRestController.findByIdThenRemove);
 
-teacherRestRouter.route('/echo/:msg') // "students/echo/:msg"
+teacherRestRouter.route('/echo/:msg') // "teachers/echo/:msg"
     .get(teacherRestController.echoMsg)
 
 module.exports = teacherRestRouter;

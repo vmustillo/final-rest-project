@@ -64,4 +64,3 @@ http://localhost:9016/api/v1/teachers/:id
 + Test the service via curl or postman, capture screen shots of each of above REST services and send these screen captures along with github link upon submission
 + Also screen capture contents of mongodb via mongo shell client. Also send this in the email
 + Create a github repo final_project_rest and commit it on the day and time that will be emailed by ilker
-+ Email the link to github and screen captures to ilkerkiris@gmail.com
