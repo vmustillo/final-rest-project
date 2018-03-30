@@ -1,23 +1,23 @@
 {
-    "name": "final_project_rest",
-    "version": "1.0.0",
-    "description": "",
-    "main": "src/main_restServer.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "npm run start_via_nodemon",
-        "start_via_nodemon": "nodemon src/main_restServer.js"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "body-parser": "^1.18.2",
-        "cors": "^2.8.4",
-        "express": "^4.16.2",
-        "mongoose": "^4.13.7"
-    },
-    "devDependencies": {
-        "jasmine-node": "^1.14.5"
-    }
+  "name": "final_project_rest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main_restServer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run start_via_nodemon",
+    "start_via_nodemon": "nodemon src/main_restServer.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "mongoose": "^4.10.8"
+  },
+  "devDependencies": {
+    "jasmine-node": "^1.14.5"
+  }
 }

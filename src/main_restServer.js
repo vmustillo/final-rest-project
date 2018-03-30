@@ -5,7 +5,7 @@ var cors = require('cors'); // NOTE ilker, cors is to allow cross origin request
 
 var teacherRestRouter = require('./rest/route/teacherRestRouter');
 
-var teacherMongodbCollection = mongoose.connect("mongodb://localhost/TeacherssDb");
+var teacherMongodbCollection = mongoose.connect("mongodb://localhost/TeachersDb", { useMongoClient: true });
 
 // NOTE ilker set CORS variables 
 var corsWhiteListDomains = ['http://localhost:4200']; // let an angular app running running on default port 4200 come through
